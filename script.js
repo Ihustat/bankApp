@@ -88,7 +88,7 @@ function displayTransactions(transactions) {
 
 displayTransactions(account1.transactions);
 
-//create NickName
+//create Nicknames
 
 function createNicknames(accs) {
     accs.forEach(acc => {
@@ -101,3 +101,13 @@ function createNicknames(accs) {
 };
 
 createNicknames(accounts);
+
+//show total balance
+
+function showBalance(transactions) {
+  const balance = transactions.reduce((accum, transaction) => accum + transaction);
+
+  labelBalance.textContent = `${balance}$`
+};
+
+showBalance(account1.transactions);
