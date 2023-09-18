@@ -73,10 +73,12 @@ function clearInput(input) {
 
 //dispalyTransactions
 
-function displayTransactions(transactions) {
+function displayTransactions(transactions, sort = false) {
   containerTransactions.innerHTML = '';
+
+  const transacs = sort ? transactions.slice().sort((a, b) => a - b) : transactions;
   
-  transactions.forEach((transaction, i) => {
+  transacs.forEach((transaction, i) => {
       const transType = transaction > 0 ? 'deposit' : 'withdrawal';
 
       const transactionRaw = `
@@ -217,5 +219,17 @@ btnLoan.addEventListener('click', (e) => {
 
         clearInput(inputLoanAmount);
     };
+});
+
+//sort transactions
+
+let isSorted = false;
+
+btnSort.addEventListener('click', (e) => {
+  e.preventDefault();
+
+isSorted = !isSorted;
+
+  displayTransactions(currentAccount.transactions, isSorted);
 });
 
