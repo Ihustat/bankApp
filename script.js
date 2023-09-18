@@ -86,7 +86,6 @@ function displayTransactions(transactions) {
   });
 };
 
-displayTransactions(account1.transactions);
 
 //create Nicknames
 
@@ -110,4 +109,34 @@ function showBalance(transactions) {
   labelBalance.textContent = `${balance}$`
 };
 
-showBalance(account1.transactions);
+//display total
+
+function displayTotal(transaction) {
+  labelSumIn.textContent = `${transaction.filter(trans => trans > 0).reduce((accum, trans) => accum + trans)}$`;
+
+  labelSumOut.textContent = `${transaction.filter(trans => trans < 0).reduce((accum, trans) => accum + trans)}$`;
+
+};
+
+//logIn
+
+let currentAccount
+
+btnLogin.addEventListener('click', (e) => {
+  e.preventDefault();
+
+ currentAccount = accounts.find(account => account.nickname === inputLoginUsername.value);
+
+ if (currentAccount?.pin === +inputLoginPin.value) {
+    labelWelcome.textContent = `Добро пожаловать, ${currentAccount.userName}`;
+
+    containerApp.style.opacity = '1';
+
+    displayTransactions(currentAccount.transactions);
+
+    showBalance(currentAccount.transactions);
+
+    displayTotal(currentAccount.transactions);
+ };
+});
+
