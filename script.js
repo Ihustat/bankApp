@@ -157,6 +157,8 @@ btnLogin.addEventListener('click', (e) => {
 
 });
 
+//tranfer function
+
 btnTransfer.addEventListener('click', (e) => {
   e.preventDefault();
 
@@ -171,12 +173,32 @@ btnTransfer.addEventListener('click', (e) => {
     transferAmount <= currentAccount.balance && 
     recipentAcc?.nickname !== currentAccount.nickname && 
     recipentAcc) {
-      
+
     currentAccount.transactions.push(-transferAmount);
     recipentAcc.transactions.push(transferAmount);
 
     updateUI(currentAccount);
 
   };
+});
+
+//close account function
+
+btnClose.addEventListener('close', (e) => {
+  e.preventDefault();
+
+  if (inputCloseUsername.value === currentAccount.nickname &&
+     +inputClosePin.value === currentAccount.pin) {
+      const currentIndex = accounts.findIndex(account => account.nickname === currentAccount.nickname);
+
+      accounts.splice(currentIndex, 1);
+
+      containerApp.style.opacity = 0;
+
+      labelWelcome.textContent = 'Войдите в свой аккаунт';
+
+      clearInput(inputCloseUsername);
+      clearInput(inputClosePin);
+  }
 });
 
