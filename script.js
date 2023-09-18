@@ -202,3 +202,20 @@ btnClose.addEventListener('close', (e) => {
   }
 });
 
+//loan function
+
+btnLoan.addEventListener('click', (e) => {
+  e.preventDefault();
+
+  const loanAmount = +inputLoanAmount.value;
+
+  if (loanAmount > 0 &&
+    currentAccount.transactions.some(trans => trans >= loanAmount * 0.1)) {
+        currentAccount.transactions.push(loanAmount);
+
+        updateUI(currentAccount);
+
+        clearInput(inputLoanAmount);
+    };
+});
+
