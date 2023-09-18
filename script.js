@@ -65,6 +65,12 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
+//clear input
+
+function clearInput(input) {
+  input.value = '';
+};
+
 //dispalyTransactions
 
 function displayTransactions(transactions) {
@@ -103,10 +109,10 @@ createNicknames(accounts);
 
 //show total balance
 
-function showBalance(transactions) {
-  const balance = transactions.reduce((accum, transaction) => accum + transaction);
+function showBalance(account) {
+  account.balance = account.transactions.reduce((accum, transaction) => accum + transaction);
 
-  labelBalance.textContent = `${balance}$`
+  labelBalance.textContent = `${account.balance}$`
 };
 
 //display total
@@ -116,6 +122,16 @@ function displayTotal(transaction) {
 
   labelSumOut.textContent = `${transaction.filter(trans => trans < 0).reduce((accum, trans) => accum + trans)}$`;
 
+};
+
+//updateUi
+
+function updateUI(account) {
+  displayTransactions(account.transactions);
+
+  showBalance(account);
+
+  displayTotal(account.transactions);
 };
 
 //logIn
@@ -132,11 +148,35 @@ btnLogin.addEventListener('click', (e) => {
 
     containerApp.style.opacity = '1';
 
-    displayTransactions(currentAccount.transactions);
+    updateUI(currentAccount);
 
-    showBalance(currentAccount.transactions);
+    clearInput(inputLoginPin);
+    clearInput(inputLoginUsername);
 
-    displayTotal(currentAccount.transactions);
  };
+
+});
+
+btnTransfer.addEventListener('click', (e) => {
+  e.preventDefault();
+
+  const transferAmount = +inputTransferAmount.value;
+
+  const recipentAcc = accounts.find(account => account.nickname === inputTransferTo.value);
+
+  clearInput(inputTransferAmount);
+  clearInput(inputTransferTo);
+
+  if (transferAmount > 0 && 
+    transferAmount <= currentAccount.balance && 
+    recipentAcc?.nickname !== currentAccount.nickname && 
+    recipentAcc) {
+      
+    currentAccount.transactions.push(-transferAmount);
+    recipentAcc.transactions.push(transferAmount);
+
+    updateUI(currentAccount);
+
+  };
 });
 
