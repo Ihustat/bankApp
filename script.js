@@ -7,6 +7,18 @@ const account1 = {
   transactions: [500, 250, -300, 5000, -850, -110, -170, 1100],
   interest: 1.5,
   pin: 1111,
+  transactionsDates: [
+    '2020-10-02T14:43:31.074Z',
+    '2020-10-29T11:24:19.761Z',
+    '2020-11-15T10:45:23.907Z',
+    '2021-01-22T12:17:46.255Z',
+    '2021-02-12T15:14:06.486Z',
+    '2021-03-09T11:42:26.371Z',
+    '2021-10-09T07:43:59.331Z',
+    '2021-10-11T15:21:20.814Z',
+  ],
+  currency: 'USD',
+  locale: 'en-US',
 };
 
 const account2 = {
@@ -14,6 +26,18 @@ const account2 = {
   transactions: [2000, 6400, -1350, -70, -210, -2000, 5500, -30],
   interest: 1.3,
   pin: 2222,
+   transactionsDates: [
+    '2020-10-02T14:43:31.074Z',
+    '2020-10-29T11:24:19.761Z',
+    '2020-11-15T10:45:23.907Z',
+    '2021-01-22T12:17:46.255Z',
+    '2021-02-12T15:14:06.486Z',
+    '2021-03-09T11:42:26.371Z',
+    '2021-10-09T07:43:59.331Z',
+    '2021-10-11T15:21:20.814Z',
+  ],
+  currency: 'USD',
+  locale: 'en-US',
 };
 
 const account3 = {
@@ -21,6 +45,18 @@ const account3 = {
   transactions: [900, -200, 280, 300, -200, 150, 1400, -400],
   interest: 0.8,
   pin: 3333,
+   transactionsDates: [
+    '2020-10-02T14:43:31.074Z',
+    '2020-10-29T11:24:19.761Z',
+    '2020-11-15T10:45:23.907Z',
+    '2021-01-22T12:17:46.255Z',
+    '2021-02-12T15:14:06.486Z',
+    '2021-03-09T11:42:26.371Z',
+    '2021-10-09T07:43:59.331Z',
+    '2021-10-11T15:21:20.814Z',
+  ],
+  currency: 'USD',
+  locale: 'en-US',
 };
 
 const account4 = {
@@ -28,6 +64,15 @@ const account4 = {
   transactions: [530, 1300, 500, 40, 190],
   interest: 1,
   pin: 4444,
+   transactionsDates: [
+    '2020-10-02T14:43:31.074Z',
+    '2020-10-29T11:24:19.761Z',
+    '2020-11-15T10:45:23.907Z',
+    '2021-01-22T12:17:46.255Z',
+    '2021-02-12T15:14:06.486Z',
+  ],
+  currency: 'USD',
+  locale: 'en-US',
 };
 
 const account5 = {
@@ -35,6 +80,15 @@ const account5 = {
   transactions: [630, 800, 300, 50, 120],
   interest: 1.1,
   pin: 5555,
+   transactionsDates: [
+    '2020-10-02T14:43:31.074Z',
+    '2020-10-29T11:24:19.761Z',
+    '2020-11-15T10:45:23.907Z',
+    '2021-01-22T12:17:46.255Z',
+    '2021-02-12T15:14:06.486Z',
+  ],
+  currency: 'USD',
+  locale: 'en-US',
 };
 
 const accounts = [account1, account2, account3, account4, account5];
@@ -73,19 +127,27 @@ function clearInput(input) {
 
 //dispalyTransactions
 
-function displayTransactions(transactions, sort = false) {
+function displayTransactions(account, sort = false) {
   containerTransactions.innerHTML = '';
 
-  const transacs = sort ? transactions.slice().sort((a, b) => a - b) : transactions;
+  const transacs = sort ? account.transactions.slice().sort((a, b) => a - b) : account.transactions;
   
   transacs.forEach((transaction, i) => {
       const transType = transaction > 0 ? 'deposit' : 'withdrawal';
+
+      const date = new Date(account.transactionsDates[i]),
+            day = `${date.getDate()}`.padStart(2, '0'),
+            month = `${date.getMonth() + 1}`.padStart(2, '0'),
+            year = date.getFullYear();
+
+      const transDate = `${day}/${month}/${year}`;
 
       const transactionRaw = `
       <div class="transactions__row">
       <div class="transactions__type transactions__type--${transType}">
         ${i + 1}. ${transType}
       </div>
+      <div class="transactions__date">${transDate}</div>
       <div class="transactions__value">${transaction}$</div>
     </div>
       `;
@@ -109,6 +171,12 @@ function createNicknames(accs) {
 
 createNicknames(accounts);
 
+//add date transaction
+
+function addDate(account) {
+  account.transactionsDates.push(new Date());
+};
+
 //show total balance
 
 function showBalance(account) {
@@ -129,7 +197,7 @@ function displayTotal(transaction) {
 //updateUi
 
 function updateUI(account) {
-  displayTransactions(account.transactions);
+  displayTransactions(account);
 
   showBalance(account);
 
@@ -155,6 +223,14 @@ btnLogin.addEventListener('click', (e) => {
     clearInput(inputLoginPin);
     clearInput(inputLoginUsername);
 
+    //Date
+
+    const now = new Date(),
+    day = `${now.getDate()}`.padStart(2, '0'),
+    month = `${now.getMonth() + 1}`.padStart(2, '0'),
+    year = now.getFullYear();
+
+    labelDate.textContent = `${day}/${month}/${year}`;
  };
 
 });
@@ -178,6 +254,9 @@ btnTransfer.addEventListener('click', (e) => {
 
     currentAccount.transactions.push(-transferAmount);
     recipentAcc.transactions.push(transferAmount);
+
+    addDate(currentAccount);
+    addDate(recipentAcc);
 
     updateUI(currentAccount);
 
@@ -215,6 +294,8 @@ btnLoan.addEventListener('click', (e) => {
     currentAccount.transactions.some(trans => trans >= loanAmount * 0.1)) {
         currentAccount.transactions.push(loanAmount);
 
+        addDate(currentAccount);
+
         updateUI(currentAccount);
 
         clearInput(inputLoanAmount);
@@ -230,6 +311,6 @@ btnSort.addEventListener('click', (e) => {
 
 isSorted = !isSorted;
 
-  displayTransactions(currentAccount.transactions, isSorted);
+  displayTransactions(currentAccount, isSorted);
 });
 
